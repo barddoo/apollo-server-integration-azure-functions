@@ -12,8 +12,7 @@ import {
 } from '@azure/functions';
 import { TextEncoder } from 'node:util';
 
-import type { WithRequired } from '@apollo/utils.withrequired';
-
+export type WithRequired<T, K extends keyof T> = T & Required<Pick<T, K>>;
 export interface AzureFunctionsContextFunctionArgument {
   context: InvocationContext;
   req: Omit<
