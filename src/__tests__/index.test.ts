@@ -1,14 +1,13 @@
 import { ApolloServer, ApolloServerOptions, BaseContext } from '@apollo/server';
-import { startServerAndCreateHandler } from '..';
 import {
   CreateServerForIntegrationTestsOptions,
   defineIntegrationTestSuite,
 } from '@apollo/server-integration-testsuite';
 import { createServer } from 'http';
-import type { AzureFunction } from '@azure/functions';
+import { startServerAndCreateHandler } from '..';
 import { createMockServer, urlForHttpServer } from './mockServer';
 
-describe('Azure Functions', () => {
+describe('Azure Functions v4', () => {
   defineIntegrationTestSuite(
     async function (
       serverOptions: ApolloServerOptions<BaseContext>,
@@ -19,7 +18,7 @@ describe('Azure Functions', () => {
         ...serverOptions,
       });
 
-      const handler: AzureFunction = testOptions
+      const handler = testOptions
         ? startServerAndCreateHandler(server, testOptions)
         : startServerAndCreateHandler(server);
 

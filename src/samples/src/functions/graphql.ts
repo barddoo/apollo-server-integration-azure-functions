@@ -1,5 +1,6 @@
 import { ApolloServer } from '@apollo/server';
-import { startServerAndCreateHandler } from '../../..';
+import { app } from '@azure/functions';
+import { startServerAndCreateHandler } from '../../../';
 
 // The GraphQL schema
 const typeDefs = `#graphql
@@ -21,4 +22,6 @@ const server = new ApolloServer({
   resolvers,
 });
 
-export default startServerAndCreateHandler(server);
+app.http('graphql', {
+  handler: startServerAndCreateHandler(server),
+});

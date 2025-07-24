@@ -15,7 +15,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": ">=18.0"
+    "node": ">=20.0"
   },
   "scripts": {
     "build": "tsc --build tsconfig.build.json",
@@ -33,31 +33,30 @@
     "start:host": "cd src/sample && func start --cors *"
   },
   "devDependencies": {
-    "@apollo/server-integration-testsuite": "4.1.1",
+    "@apollo/server-integration-testsuite": "5.0.0",
     "@changesets/changelog-github": "0.4.7",
     "@changesets/cli": "2.25.1",
-    "@types/jest": "29.5.14",
-    "@types/node": "18.11.9",
-    "azure-functions-core-tools": "4.0.5801",
+    "@types/jest": "30.0.0",
+    "@types/node": "^24.x",
+    "azure-functions-core-tools": "4.1.0",
     "cspell": "6.13.1",
-    "jest": "29.2.2",
-    "jest-junit": "14.0.1",
+    "jest": "30.0.5",
+    "jest-junit": "16.0.0",
     "npm-run-all": "4.1.5",
-    "prettier": "2.7.1",
-    "ts-jest": "29.0.3",
-    "ts-node": "10.9.1",
-    "typescript": "4.8.4"
+    "prettier": "3.6.2",
+    "ts-jest": "29.4.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.3"
   },
   "volta": {
-    "node": "18.13.0",
-    "npm": "9.3.0"
+    "node": "20.19.4",
+    "npm": "10.8.2"
   },
   "dependencies": {
-    "@apollo/server": "^4.1.1",
-    "@azure/functions": "^3.2.0",
-    "@azure/functions-v4": "npm:@azure/functions@^4.5.0",
-    "graphql": "^16.6.0",
+    "@apollo/server": "^5.0.0",
+    "@azure/functions": "^4.5.0",
+    "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
-    "undici": "^5.27.2"
+    "undici": "^7.12.0"
   }
 }

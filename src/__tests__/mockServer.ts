@@ -1,19 +1,13 @@
-import type {
-  AzureFunction,
-  Context,
-  HttpMethod,
-  HttpRequest,
-  HttpRequestHeaders,
-  HttpRequestQuery,
-  Logger,
+import {
+  HttpHandler,
+  InvocationContext,
+  type HttpMethod,
+  type HttpRequest,
 } from '@azure/functions';
-import type {
-  IncomingHttpHeaders,
-  IncomingMessage,
-  Server,
-  ServerResponse,
-} from 'http';
+import type { IncomingMessage, Server, ServerResponse } from 'http';
 import type { AddressInfo } from 'net';
+import { ReadableStream } from 'stream/web';
+import { Headers, HeadersInit } from 'undici';
 
 export function urlForHttpServer(httpServer: Server): string {
   const { address, port } = httpServer.address() as AddressInfo;
@@ -28,7 +22,7 @@ export function urlForHttpServer(httpServer: Server): string {
   return `http://${hostname}:${port}`;
 }
 
-export const createMockServer = (handler: AzureFunction) => {
+export const createMockServer = (handler: HttpHandler) => {
   return (req: IncomingMessage, res: ServerResponse) => {
     let body = '';
     req.on('data', (chunk) => (body += chunk));
@@ -37,40 +31,44 @@ export const createMockServer = (handler: AzureFunction) => {
       const azReq: HttpRequest = {
         method: (req.method as HttpMethod) || null,
         url: new URL(req.url || '', 'http://localhost').toString(),
-        headers: processHeaders(req.headers),
-        body,
-        query: processQuery(req.url),
+        headers: new Headers(req.headers as HeadersInit),
+        body: new ReadableStream({
+          start(controller) {
+            controller.enqueue(new TextEncoder().encode(body));
+            controller.close();
+          },
+        }),
+        query: new URLSearchParams(req.url),
         params: {},
         user: null,
-        parseFormBody: () => {
+        arrayBuffer: async () => {
+          return Buffer.from(body).buffer;
+        },
+        text: async () => {
+          return body;
+        },
+        json: async () => {
+          return JSON.parse(body);
+        },
+        blob: async () => {
           throw new Error('Not implemented');
         },
-        get: () => void 0,
+        bodyUsed: false,
+        formData: async () => {
+          throw new Error('Not implemented');
+        },
+        clone: () => {
+          throw new Error('Not implemented');
+        },
       };
 
-      const context: Context = {
+      const context = new InvocationContext({
         invocationId: 'mock',
-        executionContext: {
-          invocationId: 'mock',
-          functionName: 'mock',
-          functionDirectory: 'mock',
-          retryContext: null,
-        },
-        bindings: {},
-        bindingData: {
-          invocationId: 'mock',
-        },
-        log: createConsoleLogger(),
-        bindingDefinitions: [],
-        traceContext: {
-          traceparent: '',
-          tracestate: '',
-          attributes: {},
-        },
-        done: () => {},
-      };
+        functionName: 'mock',
+        logHandler: console.log,
+      });
 
-      const azRes = await handler(context, azReq);
+      const azRes = await handler(azReq, context);
 
       res.statusCode = azRes.status || 200;
       Object.entries(azRes.headers ?? {}).forEach(([key, value]) => {
@@ -80,41 +78,4 @@ export const createMockServer = (handler: AzureFunction) => {
       res.end();
     });
   };
-};
-
-const processQuery: (url: string | undefined) => HttpRequestQuery = (url) => {
-  if (!url) {
-    return {};
-  }
-
-  const uri = new URL(url, 'http://localhost');
-
-  const query: HttpRequestQuery = {};
-  for (const [key, value] of uri.searchParams.entries()) {
-    if (query[key] !== undefined) {
-      query[key] = `${query[key]},${value}`;
-    } else {
-      query[key] = value;
-    }
-  }
-  return query;
-};
-
-const processHeaders: (headers: IncomingHttpHeaders) => HttpRequestHeaders = (
-  headers,
-) => {
-  const result: HttpRequestHeaders = {};
-  for (const [key, value] of Object.entries(headers)) {
-    result[key] = Array.isArray(value) ? value.join(',') : value ?? '';
-  }
-  return result;
-};
-
-const createConsoleLogger = () => {
-  const logger = console.log as Logger;
-  logger.error = console.error;
-  logger.warn = console.warn;
-  logger.info = console.info;
-  logger.verbose = console.log;
-  return logger;
 };
