@@ -13,6 +13,14 @@ import {
 import { TextEncoder } from 'node:util';
 
 export type WithRequired<T, K extends keyof T> = T & Required<Pick<T, K>>;
+
+/**
+ * Represents the arguments passed to an Azure Functions context function.
+ *
+ * @property context - The Azure Functions invocation context, providing information about the current execution.
+ * @property req - The HTTP request object, excluding properties related to body parsing and content retrieval.
+ * @property body - The parsed body of the HTTP request, if available.
+ */
 export interface AzureFunctionsContextFunctionArgument {
   context: InvocationContext;
   req: Omit<
@@ -22,6 +30,14 @@ export interface AzureFunctionsContextFunctionArgument {
   body: unknown;
 }
 
+/**
+ * Options for configuring Azure Functions middleware integration.
+ *
+ * @typeParam TContext - The shape of the context object to be used within the middleware.
+ *
+ * @property context - An optional function to generate the GraphQL context for each Azure Function invocation.
+ *   Receives an argument of type `AzureFunctionsContextFunctionArgument` and returns a context of type `TContext`.
+ */
 export interface AzureFunctionsMiddlewareOptions<TContext extends BaseContext> {
   context?: ContextFunction<[AzureFunctionsContextFunctionArgument], TContext>;
 }
@@ -45,6 +61,12 @@ async function* toUint8ArrayStream(
   }
 }
 
+/**
+ * Starts the Apollo Server and creates an Azure Functions HTTP handler.
+ *
+ * @param server - An instance of ApolloServer configured with the desired context.
+ * @param options - Optional middleware options for Azure Functions integration.
+ */
 export function startServerAndCreateHandler(
   server: ApolloServer<BaseContext>,
   options?: AzureFunctionsMiddlewareOptions<BaseContext>,
