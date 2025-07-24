@@ -10,7 +10,7 @@ This is a simple package allows you to integrate Apollo Server into an Azure Fun
 
 ## **Requirements**
 
-- **[Node.js v16](https://nodejs.org/)** or later
+- **[Node.js v20](https://nodejs.org/)** or later
 - **[Azure Functions v4](https://learn.microsoft.com/azure/azure-functions/functions-overview)** or later
 - **[GraphQL.js v16](https://graphql.org/graphql-js/)** or later
 - **[Apollo Server v4](https://www.apollographql.com/docs/apollo-server/)** or later
@@ -101,4 +101,5 @@ app.http('graphql', {
 
 # Contributors
 
+- Charles Fonseca ([barddoo](https://github.com/barddoo))
 - Aaron Powell ([aaronpowell](https://github.com/aaronpowell))
