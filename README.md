@@ -1,6 +1,6 @@
 # Apollo Server Integration for Azure Functions
 
-![Build](https://img.shields.io/github/actions/workflow/status/apollo-server-integrations/apollo-server-integration-azure-functions/ci.yaml) ![Release](https://img.shields.io/github/actions/workflow/status/apollo-server-integrations/apollo-server-integration-azure-functions/release-pr.yaml) ![npm (scoped)](https://img.shields.io/npm/v/@as-integrations/azure-functions)
+![Build](https://img.shields.io/github/actions/workflow/status/apollo-server-integrations/apollo-server-integration-azure-functions/ci.yaml) ![Release](https://img.shields.io/github/actions/workflow/status/apollo-server-integrations/apollo-server-integration-azure-functions/release-pr.yaml) ![npm (scoped)](https://img.shields.io/npm/v/@barddoo/azure-functions)
 
 ## **Introduction**
 
@@ -18,7 +18,7 @@ This is a simple package allows you to integrate Apollo Server into an Azure Fun
 ## **Installation**
 
 ```bash
-npm install @as-integrations/azure-functions @apollo/server graphql @azure/functions
+npm install @barddoo/azure-functions @apollo/server graphql @azure/functions
 ```
 
 ## **Usage**
